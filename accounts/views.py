@@ -1,5 +1,6 @@
 from django.conf import settings
 from django.contrib.auth.tokens import PasswordResetTokenGenerator
+from rest_framework_simplejwt.tokens import RefreshToken
 from django.contrib.sites.shortcuts import get_current_site
 from django.core.mail import send_mail
 from django.urls import reverse
@@ -110,8 +111,6 @@ class PasswordResetConfirmView(generics.GenericAPIView):
                 {
                     'success': True,
                     'message': 'Credentials are valid',
-                    'uidb64': uidb64,
-                    'token': token
                 },
                 status=status.HTTP_200_OK
             )
@@ -139,8 +138,15 @@ class PasswordResetConfirmView(generics.GenericAPIView):
             user.set_password(serializer.validated_data['password'])
             user.save()
 
+            # Generate JWT tokens for the user
+            refresh = RefreshToken.for_user(user)
             return Response(
-                {'success': 'Password reset successfully'},
+                {
+                    'success': 'Password reset successfully',
+                    'refresh': str(refresh),
+                    'access': str(refresh.access_token),
+                    'user': UserCreateSerializer(user).data
+                },
                 status=status.HTTP_200_OK
             )
 
