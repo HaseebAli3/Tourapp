@@ -1,8 +1,12 @@
 from rest_framework import serializers
-from .models import Location
+from .models import Location, LocationImage
 
 class LocationSerializer(serializers.ModelSerializer):
+    images = serializers.SerializerMethodField()
+    
     class Meta:
         model = Location
-        fields = '__all__'
-        read_only_fields = ['created_by', 'created_at', 'updated_at']
+        fields = ['id', 'name', 'description', 'price', 'location_url', 'images']
+    
+    def get_images(self, obj):
+        return [img.image.url for img in obj.images.all()]

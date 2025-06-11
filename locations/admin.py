@@ -1,15 +1,17 @@
-# admin.py
 from django.contrib import admin
-from .models import Location
-from django.contrib.auth import get_user_model
+from .models import Location, LocationImage
 
-User = get_user_model()
-
-@admin.register(Location)
 class LocationAdmin(admin.ModelAdmin):
-    list_display = ('name', 'created_by', 'created_at')
+    # Fields to show in the admin form
+    list_display = ('name', 'description', 'price', 'created_by')
+    exclude = ('created_by',)  # Hide created_by field from form
+    
+    def save_model(self, request, obj, form, change):
+        # Automatically set the logged-in user as the creator
+        if not obj.pk:  # Only for new objects
+            obj.created_by = request.user
+        super().save_model(request, obj, form, change)
 
-    def formfield_for_foreignkey(self, db_field, request, **kwargs):
-        if db_field.name == "created_by":
-            kwargs["queryset"] = User.objects.filter(is_staff=True)
-        return super().formfield_for_foreignkey(db_field, request, **kwargs)
+# Register your models with the custom admin class
+admin.site.register(Location, LocationAdmin)
+admin.site.register(LocationImage)
