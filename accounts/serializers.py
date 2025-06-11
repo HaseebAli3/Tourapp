@@ -60,8 +60,7 @@ class PasswordResetRequestSerializer(serializers.Serializer):
 
 class PasswordResetConfirmSerializer(serializers.Serializer):
     password = serializers.CharField(write_only=True, required=True)
-    
-    
+
     def validate_password(self, value):
         try:
             validate_password(value)
