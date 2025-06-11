@@ -36,10 +36,25 @@ class UserCreateSerializer(serializers.ModelSerializer):
 
 class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
     def validate(self, attrs):
+        email = attrs.get(self.username_field)
+        password = attrs.get("password")
+        
+        # Get user if exists
+        user = User.objects.filter(email=email).first()
+        
+        if not user:
+            return {"error": "No account with this email"}
+        
+        if not user.is_active:
+            return {"error": "Account is not active"}
+        
+        if not user.check_password(password):
+            return {"error": "Wrong password"}
+        
+        # If all checks pass
         data = super().validate(attrs)
-        data['user'] = UserSerializer(self.user).data
+        data['user'] = UserSerializer(user).data
         return data
-
 class PasswordResetRequestSerializer(serializers.Serializer):
     email = serializers.EmailField()
 
