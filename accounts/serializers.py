@@ -19,12 +19,6 @@ class UserCreateSerializer(serializers.ModelSerializer):
         model = User
         fields = ['email', 'full_name', 'password']
     
-    def validate_email(self, value):
-        """Validate that email is a Gmail address"""
-        if not value.endswith('@gmail.com'):
-            raise serializers.ValidationError('Only Gmail addresses are allowed')
-        return value
-    
     def validate_password(self, value):
         """Validate password strength"""
         try:
