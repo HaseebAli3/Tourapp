@@ -69,12 +69,6 @@ class PasswordResetRequestSerializer(serializers.Serializer):
     """Serializer for password reset request"""
     email = serializers.EmailField()
 
-    def validate_email(self, value):
-        """Validate that email is a Gmail address"""
-        if not value.endswith('@gmail.com'):
-            raise serializers.ValidationError('Only Gmail addresses are allowed')
-        return value
-
 
 class PasswordResetConfirmSerializer(serializers.Serializer):
     """Serializer for password reset confirmation"""
