@@ -68,13 +68,10 @@ class PasswordResetRequestView(generics.GenericAPIView):
             user = User.objects.get(email=email)
             uidb64 = urlsafe_base64_encode(smart_bytes(user.id))
             token = PasswordResetTokenGenerator().make_token(user)
-
-            current_site = get_current_site(request).domain
-            relative_link = reverse(
-                'password-reset-confirm',
-                kwargs={'uidb64': uidb64, 'token': token}
-            )
-            abs_url = f'http://{current_site}{relative_link}'
+            
+            # Construct frontend URL manually
+            frontend_url = settings.FRONTEND_RESET_PASSWORD_URL
+            abs_url = f'{frontend_url}/{uidb64}/{token}/'  # e.g., http://localhost:3000/reset-password/MQ/cs83d2-...
 
             email_body = f'Hello,\nUse the link below to reset your password:\n{abs_url}'
             send_mail(

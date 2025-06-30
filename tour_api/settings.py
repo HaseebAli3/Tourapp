@@ -20,7 +20,12 @@ SECRET_KEY = os.getenv('SECRET_KEY', 'django-insecure-g%1=^$qy_5u@h3-3kfrhrni!k5
 DEBUG = True
 
 ALLOWED_HOSTS = []
-
+# settings.py
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:3000",
+    "http://127.0.0.1:3000",
+]
+CORS_ALLOW_CREDENTIALS = True
 # Application definition
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -29,7 +34,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    
+    'corsheaders',
     # Third party apps
     'rest_framework',
     'rest_framework_simplejwt',
@@ -43,7 +48,7 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
-    
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -167,4 +172,5 @@ EMAIL_HOST_PASSWORD = 'juwh pofh ppuz sbyy'  # App password or account password
 DEFAULT_FROM_EMAIL = 'tourapp@gmail.com'  # Should match EMAIL_HOST_USER
 
 # Frontend URLs (for password reset)
+# settings.py
 FRONTEND_RESET_PASSWORD_URL = os.getenv('FRONTEND_RESET_PASSWORD_URL', 'http://localhost:3000/reset-password')
